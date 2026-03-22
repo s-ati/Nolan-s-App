@@ -12,25 +12,36 @@ import WeeklyXpChart from '@/components/dashboard/weekly-xp-chart'
 import QuickActionsCard from '@/components/dashboard/quick-actions-card'
 import PlannerPreviewCard from '@/components/dashboard/planner-preview-card'
 
+function SectionLabel({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="section-label">{label}</span>
+      <div className="flex-1 h-px bg-white/[0.04]" />
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   return (
-    <div className="space-y-5 pb-10">
+    <div className="space-y-6 pb-12">
 
-      {/* ── Hero: Command Center ── */}
+      {/* ── Command Center Hero ── */}
       <LevelHeroCard />
 
       {/* ── KPI Row ── */}
       <KpiCards />
 
-      {/* ── Main Content Grid ── */}
+      {/* ── Today's Focus ── */}
+      <SectionLabel label="Today's Focus" />
+
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        {/* Column 1: Goals + Due Follow-ups */}
+        {/* Column 1: Goals + Follow-ups */}
         <div className="space-y-5">
           <DailyQuestsList />
           <DueFollowupsCard />
         </div>
 
-        {/* Column 2: Pipeline */}
+        {/* Column 2: Pipeline + Actions */}
         <div className="space-y-5">
           <ActiveDealsCard />
           <QuickActionsCard />
@@ -43,13 +54,17 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Bottom Row: Charts + Activity ── */}
+      {/* ── Performance & Activity ── */}
+      <SectionLabel label="Performance & Activity" />
+
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <WeeklyXpChart />
         <RecentActivityFeed />
       </div>
 
-      {/* ── Planner Preview ── */}
+      {/* ── Daily Schedule ── */}
+      <SectionLabel label="Daily Schedule" />
+
       <PlannerPreviewCard />
 
     </div>

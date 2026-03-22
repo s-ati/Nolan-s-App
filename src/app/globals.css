@@ -43,44 +43,46 @@
 
 @layer base {
   :root {
-    --radius: 0.625rem;
+    --radius: 0.75rem;
   }
 
-  /* Dark theme - always active for AgentLevel */
+  /* Dark theme — AgentLevel Command Center */
   :root {
-    --background: #0a0b0f;
-    --foreground: #e4e4e7;
-    --card: #12141a;
-    --card-foreground: #e4e4e7;
-    --popover: #161820;
-    --popover-foreground: #e4e4e7;
+    --background: #080a0e;
+    --foreground: #e2e2e6;
+    --card: #0e1118;
+    --card-foreground: #e2e2e6;
+    --card-elevated: #131620;
+    --popover: #141720;
+    --popover-foreground: #e2e2e6;
     --primary: #3b82f6;
     --primary-foreground: #ffffff;
-    --secondary: #1e2030;
+    --secondary: #1a1d2e;
     --secondary-foreground: #a1a1aa;
-    --muted: #1a1c28;
-    --muted-foreground: #71717a;
-    --accent: #1e293b;
-    --accent-foreground: #e4e4e7;
+    --muted: #181b28;
+    --muted-foreground: #6b7280;
+    --accent: #1a2236;
+    --accent-foreground: #e2e2e6;
     --destructive: #dc2626;
     --destructive-foreground: #ffffff;
-    --border: #1e2030;
-    --input: #1e2030;
+    --border: rgba(255,255,255,0.055);
+    --border-strong: rgba(255,255,255,0.09);
+    --input: #1a1d2e;
     --ring: #3b82f6;
-    --success: #22c55e;
+    --success: #10b981;
     --success-foreground: #ffffff;
     --warning: #f59e0b;
     --warning-foreground: #ffffff;
     --chart-1: #3b82f6;
-    --chart-2: #22c55e;
+    --chart-2: #10b981;
     --chart-3: #f59e0b;
     --chart-4: #8b5cf6;
     --chart-5: #06b6d4;
-    --sidebar: #0e1015;
-    --sidebar-foreground: #a1a1aa;
-    --sidebar-accent: #1e2030;
-    --sidebar-accent-foreground: #e4e4e7;
-    --sidebar-border: #1e2030;
+    --sidebar: #080a0e;
+    --sidebar-foreground: #9ca3af;
+    --sidebar-accent: #141720;
+    --sidebar-accent-foreground: #e2e2e6;
+    --sidebar-border: rgba(255,255,255,0.05);
   }
 }
 
@@ -99,18 +101,18 @@
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e2030;
-  border-radius: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a2d40;
+  background: rgba(255,255,255,0.14);
 }
 
 /* Animations */
@@ -124,32 +126,64 @@
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
-  50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
+  0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.2); }
+  50% { box-shadow: 0 0 24px rgba(59, 130, 246, 0.45); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-shimmer {
   animation: shimmer 2s infinite;
-  background: linear-gradient(90deg, transparent 25%, rgba(59, 130, 246, 0.05) 50%, transparent 75%);
+  background: linear-gradient(90deg, transparent 25%, rgba(59, 130, 246, 0.04) 50%, transparent 75%);
   background-size: 200% 100%;
 }
 
 .animate-xp-fill {
-  animation: xp-fill 0.8s ease-out;
+  animation: xp-fill 0.9s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-glow-pulse {
-  animation: glow-pulse 2s infinite;
+  animation: glow-pulse 3s ease-in-out infinite;
 }
 
-/* Glass effect for premium cards */
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+/* Premium card styles */
+.card-premium {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(255,255,255,0.03) inset;
+}
+
+.card-premium-hover:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(255,255,255,0.05) inset;
+  transition: all 0.2s ease;
+}
+
+/* Glass effect for premium overlays */
 .glass-card {
-  background: rgba(18, 20, 26, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  background: rgba(14, 17, 24, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .glass-card-hover:hover {
-  border-color: rgba(59, 130, 246, 0.3);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.06);
+}
+
+/* Section label style */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4b5563;
 }

@@ -1,8 +1,8 @@
 'use client'
 
 import { useDemoStore } from '@/stores/demo-data'
-import { subDays, format } from 'date-fns'
-import { Users, Briefcase, Phone, DollarSign, TrendingUp } from 'lucide-react'
+import { subDays } from 'date-fns'
+import { Users, Briefcase, Phone, DollarSign, TrendingUp, TrendingDown } from 'lucide-react'
 
 export default function KpiCards() {
   const contacts = useDemoStore((s) => s.contacts)
@@ -26,7 +26,6 @@ export default function KpiCards() {
     .filter((d) => d.stage !== 'Closed' && d.stage !== 'Dead')
     .reduce((sum, d) => sum + d.estimatedCommission, 0)
 
-  // Prev week for trend comparison
   const twoWeeksAgo = subDays(new Date(), 14).toISOString()
   const callsPrevWeek = activities.filter(
     (a) => a.type === 'Call' && a.createdAt >= twoWeeksAgo && a.createdAt < weekAgo
@@ -39,81 +38,86 @@ export default function KpiCards() {
   const kpis = [
     {
       label: 'Active Leads',
-      value: activeLeads,
-      display: activeLeads.toString(),
+      value: activeLeads.toString(),
+      sub: 'In your pipeline',
       icon: Users,
       color: 'text-blue-400',
       iconBg: 'bg-blue-500/10',
       trend: null as number | null,
-      sub: 'in your pipeline',
+      borderAccent: 'hover:border-blue-500/20',
     },
     {
       label: 'Active Deals',
-      value: activeDeals,
-      display: activeDeals.toString(),
+      value: activeDeals.toString(),
+      sub: 'Open transactions',
       icon: Briefcase,
       color: 'text-emerald-400',
       iconBg: 'bg-emerald-500/10',
       trend: null as number | null,
-      sub: 'open transactions',
+      borderAccent: 'hover:border-emerald-500/20',
     },
     {
       label: 'Calls This Week',
-      value: callsThisWeek,
-      display: callsThisWeek.toString(),
+      value: callsThisWeek.toString(),
+      sub: 'Outbound contacts',
       icon: Phone,
       color: 'text-amber-400',
       iconBg: 'bg-amber-500/10',
       trend: callTrend,
-      sub: 'outbound contacts',
+      borderAccent: 'hover:border-amber-500/20',
     },
     {
       label: 'Commission Pipeline',
-      value: pipelineValue,
-      display: pipelineValue >= 1000 ? `$${(pipelineValue / 1000).toFixed(0)}k` : `$${pipelineValue}`,
+      value:
+        pipelineValue >= 1000
+          ? `$${(pipelineValue / 1000).toFixed(0)}k`
+          : `$${pipelineValue}`,
+      sub: 'Estimated earnings',
       icon: DollarSign,
       color: 'text-purple-400',
       iconBg: 'bg-purple-500/10',
       trend: null as number | null,
-      sub: 'estimated earnings',
+      borderAccent: 'hover:border-purple-500/20',
     },
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       {kpis.map((kpi) => {
         const Icon = kpi.icon
+        const isPositive = kpi.trend !== null && kpi.trend >= 0
+        const TrendIcon = isPositive ? TrendingUp : TrendingDown
         return (
           <div
             key={kpi.label}
-            className="rounded-xl border border-white/[0.05] bg-[#12141a] p-5 transition-colors hover:border-white/[0.08]"
+            className={`rounded-2xl border border-white/[0.05] bg-[#0e1118] p-5 transition-all duration-200 ${kpi.borderAccent} hover:bg-[#101420]`}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                {kpi.label}
-              </span>
-              <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${kpi.iconBg}`}>
-                <Icon className={`h-3.5 w-3.5 ${kpi.color}`} />
+            <div className="flex items-center justify-between mb-4">
+              <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${kpi.iconBg}`}>
+                <Icon className={`h-4 w-4 ${kpi.color}`} />
               </div>
-            </div>
-
-            <p className={`mt-3 text-2xl font-bold tracking-tight ${kpi.color}`}>
-              {kpi.display}
-            </p>
-
-            <div className="mt-1.5 flex items-center justify-between">
-              <span className="text-[11px] text-zinc-600">{kpi.sub}</span>
               {kpi.trend !== null && (
                 <div
-                  className={`flex items-center gap-0.5 text-[10px] font-semibold ${
-                    kpi.trend >= 0 ? 'text-emerald-400' : 'text-red-400'
+                  className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-semibold ${
+                    isPositive
+                      ? 'bg-emerald-500/10 text-emerald-400'
+                      : 'bg-red-500/10 text-red-400'
                   }`}
                 >
-                  <TrendingUp className={`h-2.5 w-2.5 ${kpi.trend < 0 ? 'rotate-180' : ''}`} />
+                  <TrendIcon className="h-2.5 w-2.5" />
                   {kpi.trend > 0 ? '+' : ''}
                   {kpi.trend}%
                 </div>
               )}
+            </div>
+
+            <p className={`text-[26px] font-bold tracking-tight leading-none ${kpi.color}`}>
+              {kpi.value}
+            </p>
+
+            <div className="mt-2 space-y-0.5">
+              <p className="text-[12px] font-medium text-zinc-300">{kpi.label}</p>
+              <p className="text-[11px] text-zinc-600">{kpi.sub}</p>
             </div>
           </div>
         )
