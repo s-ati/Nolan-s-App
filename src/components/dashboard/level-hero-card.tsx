@@ -15,6 +15,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react'
 import { format, subDays } from 'date-fns'
+import BadgeStrip from './badge-strip'
 
 export default function LevelHeroCard() {
   const profile = useDemoStore((s) => s.profile)
@@ -176,6 +177,9 @@ export default function LevelHeroCard() {
                 />
               </div>
             </div>
+
+            {/* Badge strip */}
+            <BadgeStrip />
           </div>
         </div>
 
