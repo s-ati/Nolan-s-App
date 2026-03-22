@@ -102,7 +102,7 @@ export default function WeeklyActivityChart() {
           </div>
 
           <div className="h-44">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={176}>
               <BarChart data={data} barSize={22} barGap={4} margin={{ top: 0, right: 0, bottom: 0, left: -16 }}>
                 <CartesianGrid
                   vertical={false}
