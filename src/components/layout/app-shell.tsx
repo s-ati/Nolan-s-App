@@ -18,8 +18,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           "flex flex-col flex-1 min-w-0 transition-all duration-200",
-          "lg:ml-60",
-          collapsed && "lg:ml-16"
+          "lg:ml-[232px]",
+          collapsed && "lg:ml-[64px]"
         )}
       >
         <Topbar />
