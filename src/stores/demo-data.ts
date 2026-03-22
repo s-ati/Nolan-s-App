@@ -352,7 +352,7 @@ function createSeedData() {
     { id: uid(), contactId: null, dealId: null, type: 'Note Added', title: 'Studied local market stats', notes: 'Q4 market analysis', xpAwarded: 5, statEffects: { 'Knowledge': 3 }, createdAt: subDays(new Date(), 4).toISOString() },
   ]
 
-  const totalXp = 1247
+  const totalXp = 0
   const level = calculateLevel(totalXp)
 
   const quests: Quest[] = [
@@ -376,12 +376,12 @@ function createSeedData() {
   ]
 
   const statProgress: StatProgress[] = [
-    { statName: 'Lead Generation', statValue: 145, level: 2 },
-    { statName: 'Networking', statValue: 120, level: 2 },
-    { statName: 'Marketing', statValue: 35, level: 1 },
-    { statName: 'Negotiation', statValue: 95, level: 1 },
-    { statName: 'Knowledge', statValue: 28, level: 1 },
-    { statName: 'Discipline', statValue: 62, level: 1 },
+    { statName: 'Lead Generation', statValue: 0, level: 1 },
+    { statName: 'Networking', statValue: 0, level: 1 },
+    { statName: 'Marketing', statValue: 0, level: 1 },
+    { statName: 'Negotiation', statValue: 0, level: 1 },
+    { statName: 'Knowledge', statValue: 0, level: 1 },
+    { statName: 'Discipline', statValue: 0, level: 1 },
   ]
 
   const dailyPlans: DailyPlan[] = [
