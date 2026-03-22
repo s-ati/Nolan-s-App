@@ -109,9 +109,17 @@ export function Sidebar() {
       {!collapsed ? (
         <div className="px-4 py-4 border-b border-white/[0.05]">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/25 to-indigo-600/10 ring-1 ring-white/[0.08] text-sm font-bold text-white">
-              {profile.displayName?.slice(0, 2).toUpperCase() || "AG"}
-            </div>
+            {profile.avatarUrl ? (
+              <img
+                src={profile.avatarUrl}
+                alt={profile.displayName}
+                className="h-9 w-9 shrink-0 rounded-xl object-cover ring-1 ring-white/[0.1]"
+              />
+            ) : (
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/25 to-indigo-600/10 ring-1 ring-white/[0.08] text-sm font-bold text-white">
+                {profile.displayName?.slice(0, 2).toUpperCase() || "AG"}
+              </div>
+            )}
             <div className="min-w-0">
               <p className="truncate text-[13px] font-semibold text-zinc-100 leading-tight">
                 {profile.displayName}
@@ -130,9 +138,17 @@ export function Sidebar() {
         </div>
       ) : (
         <div className="flex justify-center py-3.5 border-b border-white/[0.05]">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/25 to-indigo-600/10 ring-1 ring-white/[0.08] text-sm font-bold text-white">
-            {profile.displayName?.slice(0, 2).toUpperCase() || "AG"}
-          </div>
+          {profile.avatarUrl ? (
+            <img
+              src={profile.avatarUrl}
+              alt={profile.displayName}
+              className="h-9 w-9 rounded-xl object-cover ring-1 ring-white/[0.1]"
+            />
+          ) : (
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/25 to-indigo-600/10 ring-1 ring-white/[0.08] text-sm font-bold text-white">
+              {profile.displayName?.slice(0, 2).toUpperCase() || "AG"}
+            </div>
+          )}
         </div>
       )}
 

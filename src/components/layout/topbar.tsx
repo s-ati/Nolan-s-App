@@ -113,9 +113,17 @@ export function Topbar() {
         </button>
 
         {/* User avatar */}
-        <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/25 to-indigo-600/10 ring-1 ring-white/[0.08] text-[11px] font-bold text-white ml-0.5">
-          {profile.displayName?.slice(0, 2).toUpperCase() || "AG"}
-        </div>
+        {profile.avatarUrl ? (
+          <img
+            src={profile.avatarUrl}
+            alt={profile.displayName}
+            className="w-8 h-8 rounded-xl object-cover ring-1 ring-white/[0.1] ml-0.5"
+          />
+        ) : (
+          <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/25 to-indigo-600/10 ring-1 ring-white/[0.08] text-[11px] font-bold text-white ml-0.5">
+            {profile.displayName?.slice(0, 2).toUpperCase() || "AG"}
+          </div>
+        )}
       </div>
     </header>
   )

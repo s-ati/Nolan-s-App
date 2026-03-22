@@ -135,10 +135,20 @@ export default function LevelHeroCard() {
           {/* Agent level + XP */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/[0.07] bg-gradient-to-br from-blue-500/20 via-blue-600/10 to-transparent">
-                <span className="text-xl font-extrabold text-white">{level}</span>
+              <div className="relative shrink-0">
+                {profile.avatarUrl ? (
+                  <img
+                    src={profile.avatarUrl}
+                    alt={profile.displayName}
+                    className="h-14 w-14 rounded-2xl object-cover ring-1 ring-white/[0.1]"
+                  />
+                ) : (
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-gradient-to-br from-blue-500/20 via-blue-600/10 to-transparent">
+                    <span className="text-xl font-extrabold text-white">{level}</span>
+                  </div>
+                )}
                 <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-blue-500/30 bg-[#0e1118] px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest text-blue-400">
-                  Agent Lv
+                  Agent Lv {level}
                 </div>
               </div>
               <div className="min-w-0 flex-1">
