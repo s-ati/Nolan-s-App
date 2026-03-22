@@ -57,8 +57,8 @@ export function ProfileSettings() {
       return
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Image must be under 5 MB.")
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image must be under 10 MB.")
       return
     }
 
