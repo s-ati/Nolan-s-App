@@ -11,6 +11,7 @@ import WeeklyXpChart from '@/components/dashboard/weekly-xp-chart'
 import HabitQuickLog from '@/components/dashboard/habit-quick-log'
 import PerformanceIdeasCard from '@/components/dashboard/performance-ideas-card'
 import PlannerPreviewCard from '@/components/dashboard/planner-preview-card'
+import QuestProgressCard from '@/components/dashboard/quest-progress-card'
 
 function SectionLabel({ label }: { label: string }) {
   return (
@@ -39,13 +40,20 @@ export default function DashboardPage() {
         <HabitQuickLog />
       </div>
 
+      {/* ── Quests & Consistency ── */}
+      <SectionLabel label="Quests & Consistency" />
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <QuestProgressCard />
+        <StreakCard />
+      </div>
+
       {/* ── Pipeline Focus ── */}
       <SectionLabel label="Pipeline Focus" />
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <DueFollowupsCard />
         <ActiveDealsCard />
-        <StreakCard />
       </div>
 
       {/* ── Performance & Activity ── */}

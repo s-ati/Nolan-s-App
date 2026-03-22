@@ -8,7 +8,7 @@ import {
   Users,
   Briefcase,
   DollarSign,
-  Target,
+  Flame,
   Plus,
   Phone,
   TrendingUp,
@@ -22,7 +22,8 @@ export default function LevelHeroCard() {
   const contacts = useDemoStore((s) => s.contacts)
   const deals = useDemoStore((s) => s.deals)
   const activities = useDemoStore((s) => s.activities)
-  const quests = useDemoStore((s) => s.quests)
+  const dailyTasks = useDemoStore((s) => s.dailyTasks)
+  const streaks = useDemoStore((s) => s.streaks)
   const openQuickAction = useAppStore((s) => s.openQuickAction)
 
   const { level, progressPercent, xpToNextLevel } = calculateXpProgress(profile.totalXp)
@@ -41,12 +42,14 @@ export default function LevelHeroCard() {
     .filter((d) => d.stage !== 'Closed' && d.stage !== 'Dead')
     .reduce((sum, d) => sum + d.estimatedCommission, 0)
 
-  const dailyQuests = quests.filter(
-    (q) => q.period === 'daily' && q.dueDate === todayStr
-  )
-  const completedToday = dailyQuests.filter((q) => q.status === 'completed').length
-  const totalToday = dailyQuests.length
+  // Use daily tasks (not quests) for today's progress
+  const todayTasksList = dailyTasks.filter((t) => t.date === todayStr)
+  const completedToday = todayTasksList.filter((t) => t.completed).length
+  const totalToday = todayTasksList.length
   const todayPercent = totalToday > 0 ? Math.round((completedToday / totalToday) * 100) : 0
+
+  const mainStreak = streaks.find((s) => s.streakType === 'daily_activity')
+  const currentStreak = mainStreak?.currentCount ?? 0
 
   const todayXp = activities
     .filter((a) => a.createdAt.startsWith(todayStr))
@@ -92,12 +95,12 @@ export default function LevelHeroCard() {
       ring: 'ring-amber-500/20',
     },
     {
-      label: "Today's Goals",
-      value: `${completedToday}/${totalToday}`,
-      icon: Target,
-      color: 'text-purple-400',
-      iconBg: 'bg-purple-500/10',
-      ring: 'ring-purple-500/20',
+      label: 'Day Streak',
+      value: `${currentStreak}d`,
+      icon: Flame,
+      color: currentStreak > 0 ? 'text-orange-400' : 'text-zinc-500',
+      iconBg: 'bg-orange-500/10',
+      ring: 'ring-orange-500/20',
     },
   ]
 
@@ -254,7 +257,7 @@ export default function LevelHeroCard() {
               <div className="space-y-2.5">
                 <div>
                   <p className="text-[13px] font-semibold text-zinc-100">
-                    {completedToday}/{totalToday} goals
+                    {completedToday}/{totalToday} tasks
                   </p>
                   <p className="text-[11px] text-zinc-600">completed today</p>
                 </div>
