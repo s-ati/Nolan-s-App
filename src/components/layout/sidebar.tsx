@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   LayoutDashboard,
   Target,
@@ -11,10 +11,12 @@ import {
   Trophy,
   Settings,
   Building2,
+  LogOut,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAppStore } from "@/stores/app-store"
 import { useDemoStore } from "@/stores/demo-data"
+import { useAuthStore } from "@/stores/auth-store"
 
 const workspaceNav = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
@@ -34,8 +36,15 @@ const bottomNavItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const collapsed = useAppStore((s) => s.sidebarCollapsed)
   const profile = useDemoStore((s) => s.profile)
+  const logout = useAuthStore((s) => s.logout)
+
+  async function handleLogout() {
+    await logout()
+    router.push("/auth")
+  }
 
   function isActive(href: string) {
     return pathname === href || pathname.startsWith(href + "/")
@@ -99,7 +108,7 @@ export function Sidebar() {
         {!collapsed && (
           <div>
             <span className="text-[15px] font-bold tracking-tight text-white">
-              Leveled
+              Levels
             </span>
           </div>
         )}
@@ -208,6 +217,19 @@ export function Sidebar() {
             </Link>
           )
         })}
+
+        {/* Log Out */}
+        <button
+          onClick={handleLogout}
+          title={collapsed ? "Log Out" : undefined}
+          className={cn(
+            "mt-0.5 flex w-full items-center rounded-xl text-[13px] font-medium transition-all duration-150 text-zinc-600 hover:text-red-400 hover:bg-red-500/[0.06]",
+            collapsed ? "h-10 w-10 justify-center" : "gap-3 px-3 py-2.5"
+          )}
+        >
+          <LogOut className="h-[17px] w-[17px] shrink-0" />
+          {!collapsed && <span className="truncate">Log Out</span>}
+        </button>
       </div>
     </aside>
   )

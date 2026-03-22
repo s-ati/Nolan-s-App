@@ -15,8 +15,8 @@ const inter = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Leveled",
-  description: "Real estate performance OS — gamified productivity and CRM for ambitious real estate agents",
+  title: "Levels",
+  description: "Turn daily actions into real momentum — track your work, stay consistent, and grow faster.",
 }
 
 export default function RootLayout({
