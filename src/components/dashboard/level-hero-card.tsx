@@ -119,7 +119,7 @@ export default function LevelHeroCard() {
       <div className="relative grid grid-cols-1 gap-0 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-white/[0.04]">
 
         {/* ── Column 1: Agent Identity ── */}
-        <div className="flex flex-col justify-between gap-6 p-6">
+        <div className="flex flex-col justify-start gap-6 p-6">
           <div>
             <p className="text-[11px] font-medium text-zinc-600 tracking-wide">
               {greeting}, {profile.displayName?.split(' ')[0]}
