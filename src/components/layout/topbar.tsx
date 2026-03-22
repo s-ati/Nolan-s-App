@@ -22,7 +22,7 @@ function getPageTitle(pathname: string): string {
       return title
     }
   }
-  return "AgentLevel"
+  return "Leveled"
 }
 
 export function Topbar() {

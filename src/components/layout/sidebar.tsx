@@ -48,7 +48,7 @@ export function Sidebar() {
         </div>
         {!collapsed && (
           <span className="text-base font-bold text-zinc-100 tracking-tight">
-            AgentLevel
+            Leveled
           </span>
         )}
       </div>

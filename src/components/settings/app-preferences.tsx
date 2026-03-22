@@ -18,7 +18,7 @@ const DEFAULT_PREFERENCES: Preferences = {
   soundEffects: false,
 }
 
-const STORAGE_KEY = "agentlevel-preferences"
+const STORAGE_KEY = "leveled-preferences"
 
 function loadPreferences(): Preferences {
   if (typeof window === "undefined") return DEFAULT_PREFERENCES

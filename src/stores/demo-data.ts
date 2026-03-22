@@ -1,4 +1,4 @@
-// Demo/seed data store for AgentLevel
+// Demo/seed data store for Leveled
 // This provides a fully functional local experience without requiring Supabase
 // Uses Zustand with persistence to localStorage
 
@@ -643,7 +643,7 @@ export const useDemoStore = create<DemoDataState>()(
       })),
     }),
     {
-      name: 'agentlevel-data',
+      name: 'leveled-data',
       version: 1,
     }
   )

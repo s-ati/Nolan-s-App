@@ -1,4 +1,4 @@
-// XP and Level calculation engine for AgentLevel
+// XP and Level calculation engine for Leveled
 
 export const XP_PER_LEVEL = 500
 
