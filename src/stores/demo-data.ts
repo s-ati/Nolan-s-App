@@ -314,7 +314,7 @@ function createSeedData() {
   return {
     profile: {
       id: uid(),
-      displayName: 'Agent',
+      displayName: 'Nolan',
       avatarUrl: null,
       totalXp,
       currentLevel: level,
