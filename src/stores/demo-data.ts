@@ -461,6 +461,9 @@ export const useDemoStore = create<DemoDataState>()(
       },
 
       resetData: () => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('leveled-data')
+        }
         const seed = createSeedData()
         set({ ...seed, initialized: true })
       },
