@@ -106,3 +106,27 @@ export const DIFFICULTY_XP: Record<string, number> = {
   'hard': 100,
   'epic': 200,
 }
+
+// Bonus XP for completing all daily tasks in one day
+export const DAILY_ALL_BONUS_XP = 100
+
+// Habit action definitions — instant one-tap logging
+export interface HabitAction {
+  key: string
+  label: string
+  icon: string
+  xp: number           // positive = reward, negative = penalty
+  positive: boolean
+  activityType: string | null  // maps to Activity.type for full stat tracking
+  color: string        // tailwind color base (e.g. 'blue', 'amber')
+}
+
+export const HABIT_ACTIONS: HabitAction[] = [
+  { key: 'call',       label: 'Call Made',        icon: 'phone',           xp: 15,  positive: true,  activityType: 'Call',                color: 'blue' },
+  { key: 'follow_up',  label: 'Follow-up Sent',   icon: 'check-circle-2',  xp: 20,  positive: true,  activityType: 'Follow-up Completed', color: 'amber' },
+  { key: 'new_lead',   label: 'New Lead Added',    icon: 'user-plus',       xp: 25,  positive: true,  activityType: null,                  color: 'emerald' },
+  { key: 'text',       label: 'Text Sent',         icon: 'message-square',  xp: 10,  positive: true,  activityType: 'Text',                color: 'purple' },
+  { key: 'meeting',    label: 'Meeting Logged',    icon: 'users',           xp: 30,  positive: true,  activityType: 'Meeting',             color: 'cyan' },
+  { key: 'showing',    label: 'Showing Done',      icon: 'home',            xp: 35,  positive: true,  activityType: 'Showing',             color: 'indigo' },
+  { key: 'missed',     label: 'Missed Follow-up',  icon: 'x-circle',        xp: -10, positive: false, activityType: null,                  color: 'red' },
+]

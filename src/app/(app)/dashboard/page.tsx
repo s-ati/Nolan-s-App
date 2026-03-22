@@ -1,7 +1,6 @@
 'use client'
 
 import LevelHeroCard from '@/components/dashboard/level-hero-card'
-import KpiCards from '@/components/dashboard/kpi-cards'
 import DailyQuestsList from '@/components/dashboard/daily-quests-list'
 import DueFollowupsCard from '@/components/dashboard/due-followups-card'
 import ActiveDealsCard from '@/components/dashboard/active-deals-card'
@@ -9,7 +8,8 @@ import RecentActivityFeed from '@/components/dashboard/recent-activity-feed'
 import StreakCard from '@/components/dashboard/streak-card'
 import StatsSummaryCard from '@/components/dashboard/stats-summary-card'
 import WeeklyXpChart from '@/components/dashboard/weekly-xp-chart'
-import QuickActionsCard from '@/components/dashboard/quick-actions-card'
+import HabitQuickLog from '@/components/dashboard/habit-quick-log'
+import PerformanceIdeasCard from '@/components/dashboard/performance-ideas-card'
 import PlannerPreviewCard from '@/components/dashboard/planner-preview-card'
 
 function SectionLabel({ label }: { label: string }) {
@@ -28,30 +28,24 @@ export default function DashboardPage() {
       {/* ── Command Center Hero ── */}
       <LevelHeroCard />
 
-      {/* ── KPI Row ── */}
-      <KpiCards />
+      {/* ── Today's Coaching ── */}
+      <PerformanceIdeasCard />
 
-      {/* ── Today's Focus ── */}
-      <SectionLabel label="Today's Focus" />
+      {/* ── Today's Mission ── */}
+      <SectionLabel label="Today's Mission" />
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <DailyQuestsList />
+        <HabitQuickLog />
+      </div>
+
+      {/* ── Pipeline Focus ── */}
+      <SectionLabel label="Pipeline Focus" />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        {/* Column 1: Goals + Follow-ups */}
-        <div className="space-y-5">
-          <DailyQuestsList />
-          <DueFollowupsCard />
-        </div>
-
-        {/* Column 2: Pipeline + Actions */}
-        <div className="space-y-5">
-          <ActiveDealsCard />
-          <QuickActionsCard />
-        </div>
-
-        {/* Column 3: Consistency + Skills */}
-        <div className="space-y-5">
-          <StreakCard />
-          <StatsSummaryCard />
-        </div>
+        <DueFollowupsCard />
+        <ActiveDealsCard />
+        <StreakCard />
       </div>
 
       {/* ── Performance & Activity ── */}
@@ -62,10 +56,13 @@ export default function DashboardPage() {
         <RecentActivityFeed />
       </div>
 
-      {/* ── Daily Schedule ── */}
-      <SectionLabel label="Daily Schedule" />
+      {/* ── Skills & Schedule ── */}
+      <SectionLabel label="Skills & Schedule" />
 
-      <PlannerPreviewCard />
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <StatsSummaryCard />
+        <PlannerPreviewCard />
+      </div>
 
     </div>
   )

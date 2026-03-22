@@ -5,7 +5,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { format, subDays, addDays } from 'date-fns'
-import { calculateLevel, getRankTitle, getXpForActivity, getStatEffects, calculateStatLevel } from '@/lib/game/xp-engine'
+import { calculateLevel, getRankTitle, getXpForActivity, getStatEffects, calculateStatLevel, HABIT_ACTIONS, DAILY_ALL_BONUS_XP } from '@/lib/game/xp-engine'
 
 // ---- Types ----
 export interface UserProfile {
@@ -138,6 +138,33 @@ export interface Notification {
   createdAt: string
 }
 
+// Daily task: auto-generated per day, tracks progress toward a count target
+export interface DailyTask {
+  id: string
+  key: string            // e.g. 'calls' — used for dedup per day
+  title: string
+  description: string
+  category: string
+  icon: string           // lucide icon name
+  targetCount: number
+  currentCount: number
+  xpReward: number       // awarded when task reaches targetCount
+  date: string           // yyyy-MM-dd — tasks belong to a specific day
+  completed: boolean
+  completedAt: string | null
+  trackedTypes: string[] // activity types that count; '*' = any type
+}
+
+// HabitLog: record of an instant habit tap
+export interface HabitLog {
+  id: string
+  habitKey: string
+  label: string
+  xpAwarded: number
+  positive: boolean
+  createdAt: string
+}
+
 // ---- Store ----
 interface DemoDataState {
   initialized: boolean
@@ -152,6 +179,8 @@ interface DemoDataState {
   dailyPlans: DailyPlan[]
   statProgress: StatProgress[]
   notifications: Notification[]
+  dailyTasks: DailyTask[]
+  habitLogs: HabitLog[]
 
   // Actions
   initialize: () => void
@@ -196,6 +225,14 @@ interface DemoDataState {
   // Streaks
   updateStreak: (streakType: string) => void
 
+  // Daily Tasks
+  refreshDailyTasks: () => void
+  incrementDailyTaskProgress: (activityType: string) => void
+  completeDailyTask: (id: string) => void
+
+  // Habits
+  logHabit: (habitKey: string) => void
+
   // Notifications
   addNotification: (notification: Omit<Notification, 'id' | 'createdAt' | 'isRead'>) => void
   markNotificationRead: (id: string) => void
@@ -232,6 +269,59 @@ const SEED_ACHIEVEMENTS: Achievement[] = [
   { id: uid(), key: 'first_showing', title: 'First Showing', description: 'Log your first showing', category: 'Prospecting', xpReward: 75, icon: 'home', ruleType: 'activity_count', ruleConfig: { activity_type: 'Showing', count: 1 } },
   { id: uid(), key: 'crm_clean_week', title: 'CRM Clean Week', description: 'Have no overdue follow-ups for a full week', category: 'Discipline', xpReward: 150, icon: 'sparkles', ruleType: 'weekly_crm_clean', ruleConfig: {} },
 ]
+
+function generateDailyTasksForToday(dateStr: string): DailyTask[] {
+  return [
+    {
+      id: uid(), key: 'calls', title: 'Make 5 Calls',
+      description: 'Reach out to leads and prospects',
+      category: 'Prospecting', icon: 'phone',
+      targetCount: 5, currentCount: 0, xpReward: 50,
+      date: dateStr, completed: false, completedAt: null,
+      trackedTypes: ['Call'],
+    },
+    {
+      id: uid(), key: 'followups', title: 'Send 3 Follow-ups',
+      description: 'Text or email contacts who need a check-in',
+      category: 'Follow-up', icon: 'check-circle-2',
+      targetCount: 3, currentCount: 0, xpReward: 40,
+      date: dateStr, completed: false, completedAt: null,
+      trackedTypes: ['Text', 'Email', 'Follow-up Completed'],
+    },
+    {
+      id: uid(), key: 'new_lead', title: 'Add 1 New Lead',
+      description: 'Grow your database with a fresh contact',
+      category: 'Prospecting', icon: 'user-plus',
+      targetCount: 1, currentCount: 0, xpReward: 30,
+      date: dateStr, completed: false, completedAt: null,
+      trackedTypes: ['new_lead'],
+    },
+    {
+      id: uid(), key: 'engagement', title: 'Log 1 Meeting or Showing',
+      description: 'Schedule or conduct a client engagement',
+      category: 'Pipeline Progress', icon: 'users',
+      targetCount: 1, currentCount: 0, xpReward: 35,
+      date: dateStr, completed: false, completedAt: null,
+      trackedTypes: ['Meeting', 'Showing'],
+    },
+    {
+      id: uid(), key: 'pipeline', title: 'Update the Pipeline',
+      description: 'Review or advance an active deal',
+      category: 'Pipeline Progress', icon: 'briefcase',
+      targetCount: 1, currentCount: 0, xpReward: 25,
+      date: dateStr, completed: false, completedAt: null,
+      trackedTypes: ['Contract Update', 'Deal Stage Changed', 'Inspection Update'],
+    },
+    {
+      id: uid(), key: 'volume', title: 'Log 8 Activities',
+      description: 'Hit your daily output target',
+      category: 'Discipline', icon: 'zap',
+      targetCount: 8, currentCount: 0, xpReward: 60,
+      date: dateStr, completed: false, completedAt: null,
+      trackedTypes: ['*'],
+    },
+  ]
+}
 
 function createSeedData() {
   const todayStr = today()
@@ -339,6 +429,8 @@ function createSeedData() {
       { id: uid(), type: 'followup', title: 'Follow-up due: Sarah Johnson', body: 'Your follow-up with Sarah Johnson is due today.', isRead: false, createdAt: now() },
       { id: uid(), type: 'overdue', title: 'Overdue: James Park follow-up', body: 'Your follow-up with James Park is 2 days overdue.', isRead: false, createdAt: subDays(new Date(), 1).toISOString() },
     ],
+    dailyTasks: generateDailyTasksForToday(todayStr),
+    habitLogs: [],
   }
 }
 
@@ -357,11 +449,15 @@ export const useDemoStore = create<DemoDataState>()(
       dailyPlans: [],
       statProgress: [],
       notifications: [],
+      dailyTasks: [],
+      habitLogs: [],
 
       initialize: () => {
         if (get().initialized) return
         const seed = createSeedData()
         set({ ...seed, initialized: true })
+        // Ensure today's tasks exist (handles case where persisted data has no tasks for today)
+        setTimeout(() => get().refreshDailyTasks(), 0)
       },
 
       resetData: () => {
@@ -473,6 +569,8 @@ export const useDemoStore = create<DemoDataState>()(
         if (['Call', 'Text', 'Email'].includes(activityInput.type)) {
           get().updateStreak('prospecting')
         }
+        // Update daily task progress
+        get().incrementDailyTaskProgress(activityInput.type)
         // Check achievements
         setTimeout(() => get().checkAchievements(), 100)
         return activity
@@ -611,6 +709,116 @@ export const useDemoStore = create<DemoDataState>()(
         }
       },
 
+      // Daily Tasks
+      refreshDailyTasks: () => {
+        const todayStr = today()
+        const existing = get().dailyTasks.filter((t) => t.date === todayStr)
+        if (existing.length === 0) {
+          set((s) => ({ dailyTasks: [...generateDailyTasksForToday(todayStr), ...s.dailyTasks] }))
+        }
+      },
+
+      incrementDailyTaskProgress: (activityType) => {
+        const todayStr = today()
+        const state = get()
+        const todayTasks = state.dailyTasks.filter((t) => t.date === todayStr && !t.completed)
+        if (todayTasks.length === 0) return
+
+        let xpToAward = 0
+        const updatedTasks = state.dailyTasks.map((task) => {
+          if (task.date !== todayStr || task.completed) return task
+          const matches =
+            task.trackedTypes.includes('*') || task.trackedTypes.includes(activityType)
+          if (!matches) return task
+
+          const newCount = task.currentCount + 1
+          const isNowComplete = newCount >= task.targetCount
+          if (isNowComplete) xpToAward += task.xpReward
+
+          return {
+            ...task,
+            currentCount: newCount,
+            completed: isNowComplete,
+            completedAt: isNowComplete ? now() : null,
+          }
+        })
+
+        set({ dailyTasks: updatedTasks })
+
+        if (xpToAward > 0) {
+          get().addXp(xpToAward)
+        }
+
+        // Bonus XP if all today's tasks are now done
+        const allDone = updatedTasks
+          .filter((t) => t.date === todayStr)
+          .every((t) => t.completed)
+        if (allDone) {
+          get().addXp(DAILY_ALL_BONUS_XP)
+          get().updateStreak('daily_activity')
+          set((s) => ({
+            notifications: [
+              {
+                id: uid(),
+                type: 'daily_complete',
+                title: 'All Daily Tasks Complete! 🔥',
+                body: `Outstanding work — +${DAILY_ALL_BONUS_XP} bonus XP awarded.`,
+                isRead: false,
+                createdAt: now(),
+              },
+              ...s.notifications,
+            ],
+          }))
+        }
+      },
+
+      completeDailyTask: (id) => {
+        const state = get()
+        const task = state.dailyTasks.find((t) => t.id === id)
+        if (!task || task.completed) return
+        const updatedTasks = state.dailyTasks.map((t) =>
+          t.id === id ? { ...t, completed: true, completedAt: now(), currentCount: t.targetCount } : t
+        )
+        set({ dailyTasks: updatedTasks })
+        get().addXp(task.xpReward)
+      },
+
+      // Habits
+      logHabit: (habitKey) => {
+        const habit = HABIT_ACTIONS.find((h) => h.key === habitKey)
+        if (!habit) return
+
+        const log: HabitLog = {
+          id: uid(),
+          habitKey,
+          label: habit.label,
+          xpAwarded: habit.xp,
+          positive: habit.positive,
+          createdAt: now(),
+        }
+        set((s) => ({ habitLogs: [log, ...s.habitLogs] }))
+
+        if (habit.activityType) {
+          // Full activity log — handles XP, stats, streaks, daily task progress
+          get().logActivity({
+            contactId: null,
+            dealId: null,
+            type: habit.activityType,
+            title: `${habit.label} (quick log)`,
+            notes: '',
+          })
+        } else if (habit.positive) {
+          // No mapped activity type (e.g., 'new_lead' added via modal separately)
+          get().addXp(habit.xp)
+          get().updateStreak('daily_activity')
+          get().incrementDailyTaskProgress('new_lead')
+          setTimeout(() => get().checkAchievements(), 100)
+        } else {
+          // Negative habit — deduct XP
+          get().addXp(habit.xp) // xp is negative value
+        }
+      },
+
       // Streaks
       updateStreak: (streakType) => {
         const todayStr = today()
@@ -644,7 +852,7 @@ export const useDemoStore = create<DemoDataState>()(
     }),
     {
       name: 'leveled-data',
-      version: 1,
+      version: 2,
     }
   )
 )
