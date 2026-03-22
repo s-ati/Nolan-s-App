@@ -852,7 +852,7 @@ export const useDemoStore = create<DemoDataState>()(
     }),
     {
       name: 'leveled-data',
-      version: 3,
+      version: 4,
     }
   )
 )
