@@ -3,6 +3,7 @@
 import { useDemoStore } from '@/stores/demo-data'
 import { format, subDays } from 'date-fns'
 import { BarChart2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import {
   BarChart,
   Bar,
@@ -39,6 +40,9 @@ function CustomTooltip({
 }
 
 export default function WeeklyActivityChart() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   const activities = useDemoStore((s) => s.activities)
 
   const todayStr = format(new Date(), 'yyyy-MM-dd')
@@ -102,7 +106,7 @@ export default function WeeklyActivityChart() {
           </div>
 
           <div className="h-44">
-            <ResponsiveContainer width="100%" height={176}>
+            {mounted && <ResponsiveContainer width="100%" height={176}>
               <BarChart data={data} barSize={22} barGap={4} margin={{ top: 0, right: 0, bottom: 0, left: -16 }}>
                 <CartesianGrid
                   vertical={false}
@@ -140,7 +144,7 @@ export default function WeeklyActivityChart() {
                   ))}
                 </Bar>
               </BarChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer>}
           </div>
         </>
       )}
