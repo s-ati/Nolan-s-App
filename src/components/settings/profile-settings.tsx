@@ -138,7 +138,7 @@ export function ProfileSettings() {
               {avatarPreview ? "Change Photo" : "Upload Photo"}
             </label>
             <p className="mt-1.5 text-[11px] text-zinc-600">
-              JPG, PNG or GIF · Max 5 MB
+              JPG, PNG or GIF · Max 10 MB
             </p>
           </div>
         </div>
