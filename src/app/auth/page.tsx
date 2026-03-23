@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Eye, EyeOff, Building2, Loader2 } from "lucide-react"
 import { useAuthStore } from "@/stores/auth-store"
+import { profileService } from "@/lib/profile/service"
 
 // ─── Schemas ──────────────────────────────────────────────────────────────────
 
@@ -173,7 +174,8 @@ function SignupForm({ onSwitch }: { onSwitch: () => void }) {
       password: values.password,
     })
     if (result.success) {
-      router.replace("/dashboard")
+      // New accounts must complete their professional profile before accessing the app
+      router.replace("/onboarding/profile")
     } else {
       setServerError(result.error ?? "Signup failed. Please try again.")
     }
@@ -316,7 +318,11 @@ function AuthScreen() {
 
   // Redirect already-authenticated users
   useEffect(() => {
-    if (mounted && isAuthenticated) {
+    if (!mounted || !isAuthenticated) return
+    const user = useAuthStore.getState().getCurrentUser()
+    if (user && !profileService.isOnboardingComplete(user.id)) {
+      router.replace("/onboarding/profile")
+    } else {
       router.replace("/dashboard")
     }
   }, [mounted, isAuthenticated, router])

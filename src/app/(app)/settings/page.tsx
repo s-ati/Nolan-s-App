@@ -4,6 +4,7 @@ import { Settings } from "lucide-react"
 import { ProfileSettings } from "@/components/settings/profile-settings"
 import { AppPreferences } from "@/components/settings/app-preferences"
 import { DataManagement } from "@/components/settings/data-management"
+import { DeleteAccount } from "@/components/settings/delete-account"
 
 export default function SettingsPage() {
   return (
@@ -25,6 +26,7 @@ export default function SettingsPage() {
         <ProfileSettings />
         <AppPreferences />
         <DataManagement />
+        <DeleteAccount />
       </div>
     </div>
   )

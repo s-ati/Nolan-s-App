@@ -72,6 +72,8 @@ export interface IAuthService {
   login(credentials: LoginCredentials): Promise<AuthResult>
   signup(credentials: SignupCredentials): Promise<AuthResult>
   logout(): Promise<void>
+  /** Hard-delete the account record. Real backend: call DELETE /users/:id */
+  deleteAccount(userId: string): Promise<void>
 }
 
 // ─── Mock implementation ──────────────────────────────────────────────────────
@@ -142,5 +144,11 @@ export const authService: IAuthService = {
   async logout(): Promise<void> {
     // For real providers: call their signOut() here
     // For mock: session is cleared in the auth store
+  },
+
+  async deleteAccount(userId): Promise<void> {
+    await new Promise((r) => setTimeout(r, 350))
+    const accounts = getAccounts()
+    saveAccounts(accounts.filter((a) => a.id !== userId))
   },
 }
