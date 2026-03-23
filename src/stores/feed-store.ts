@@ -4,7 +4,6 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { format, subHours, subDays, subMinutes } from 'date-fns'
 
 // ---- Types ----
 
@@ -77,112 +76,6 @@ interface FeedState {
   deleteComment: (postId: string, commentId: string) => void
 }
 
-// ---- Seed data ----
-
-function makeSeedPosts(): FeedPost[] {
-  const now = new Date()
-  return [
-    {
-      id: 'seed-1',
-      authorId: 'seed-user-1',
-      authorName: 'Jordan Mercer',
-      authorAvatar: null,
-      authorTitle: 'Senior Agent',
-      authorBrokerage: 'Keller Williams Realty',
-      content:
-        'Just closed my 3rd deal this month! The pipeline system has been a game changer for staying on top of every lead. Consistency beats everything. 🏆',
-      attachments: [],
-      likedBy: ['seed-user-2', 'seed-user-3'],
-      comments: [
-        {
-          id: 'comment-1',
-          authorId: 'seed-user-2',
-          authorName: 'Priya Nair',
-          authorAvatar: null,
-          authorTitle: "Buyer's Specialist",
-          content: "Huge congrats Jordan! What was your closing strategy?",
-          createdAt: format(subHours(now, 3), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-        },
-      ],
-      createdAt: format(subHours(now, 5), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-      updatedAt: format(subHours(now, 5), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-    },
-    {
-      id: 'seed-2',
-      authorId: 'seed-user-2',
-      authorName: 'Priya Nair',
-      authorAvatar: null,
-      authorTitle: "Buyer's Specialist",
-      authorBrokerage: 'Compass',
-      content:
-        "Hot take: The agents winning right now are the ones treating their follow-up process like a system, not a feeling. CRMs exist for a reason. How many of you have a real follow-up cadence locked in?",
-      attachments: [],
-      likedBy: ['seed-user-1', 'seed-user-3', 'seed-user-4'],
-      comments: [],
-      createdAt: format(subHours(now, 12), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-      updatedAt: format(subHours(now, 12), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-    },
-    {
-      id: 'seed-3',
-      authorId: 'seed-user-3',
-      authorName: 'Marcus Webb',
-      authorAvatar: null,
-      authorTitle: 'Team Lead',
-      authorBrokerage: 'RE/MAX Elite',
-      content:
-        'Sharing a resource I put together on objection handling for price reductions. Took me years to refine these scripts. Drop a comment if you want the full PDF.',
-      attachments: [
-        {
-          id: 'attach-1',
-          type: 'file',
-          url: '',
-          name: 'Price-Reduction-Scripts-2024.pdf',
-          mimeType: 'application/pdf',
-          size: 248320,
-        },
-      ],
-      likedBy: ['seed-user-1', 'seed-user-2'],
-      comments: [
-        {
-          id: 'comment-2',
-          authorId: 'seed-user-1',
-          authorName: 'Jordan Mercer',
-          authorAvatar: null,
-          authorTitle: 'Senior Agent',
-          content: 'This is gold, Marcus. Would love the full version.',
-          createdAt: format(subDays(now, 1), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-        },
-      ],
-      createdAt: format(subDays(now, 1), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-      updatedAt: format(subDays(now, 1), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-    },
-    {
-      id: 'seed-4',
-      authorId: 'seed-user-4',
-      authorName: 'Taylor Brooks',
-      authorAvatar: null,
-      authorTitle: 'Listing Specialist',
-      authorBrokerage: 'eXp Realty',
-      content:
-        "Market update: Inventory in my area is finally loosening up. Seeing 15–20% more active listings vs. this time last year. Good news for buyers who've been sitting on the sidelines. \n\nAnyone else noticing similar trends in their markets?",
-      attachments: [
-        {
-          id: 'attach-2',
-          type: 'link',
-          url: 'https://www.nar.realtor/research-and-statistics',
-          name: 'NAR Housing Statistics',
-          linkTitle: 'NAR Research & Statistics',
-          linkDomain: 'nar.realtor',
-        },
-      ],
-      likedBy: ['seed-user-2'],
-      comments: [],
-      createdAt: format(subDays(now, 2), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-      updatedAt: format(subDays(now, 2), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
-    },
-  ]
-}
-
 // ---- Store ----
 
 export const useFeedStore = create<FeedState>()(
@@ -193,7 +86,7 @@ export const useFeedStore = create<FeedState>()(
 
       initialize: () => {
         if (get().initialized) return
-        set({ posts: makeSeedPosts(), initialized: true })
+        set({ initialized: true })
       },
 
       addPost: (data) => {
