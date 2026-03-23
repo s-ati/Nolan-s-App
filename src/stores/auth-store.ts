@@ -13,11 +13,6 @@ interface AuthState {
   session: AuthSession | null
   isAuthenticated: boolean
   isLoading: boolean
-  /** True once the persisted state has been rehydrated from localStorage */
-  hasHydrated: boolean
-
-  // Internal
-  setHasHydrated: (value: boolean) => void
 
   // Actions
   login: (credentials: LoginCredentials) => Promise<AuthResult>
@@ -32,9 +27,6 @@ export const useAuthStore = create<AuthState>()(
       session: null,
       isAuthenticated: false,
       isLoading: false,
-      hasHydrated: false,
-
-      setHasHydrated: (value) => set({ hasHydrated: value }),
 
       login: async (credentials) => {
         set({ isLoading: true })
@@ -65,14 +57,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "levels-auth",
-      // Only persist auth state — not loading/hydration flags
       partialize: (state) => ({
         session: state.session,
         isAuthenticated: state.isAuthenticated,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true)
-      },
     }
   )
 )

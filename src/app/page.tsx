@@ -7,21 +7,12 @@ import IntroScreen from "@/components/intro-screen"
 
 const INTRO_KEY = "levels-has-seen-intro"
 
-/**
- * Root page routing logic:
- *  - Authenticated          → /dashboard
- *  - Has seen intro         → /auth
- *  - First-time visitor     → show IntroScreen
- */
 export default function RootPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const hasHydrated = useAuthStore((s) => s.hasHydrated)
   const [showIntro, setShowIntro] = useState(false)
 
   useEffect(() => {
-    if (!hasHydrated) return
-
     if (isAuthenticated) {
       router.replace("/dashboard")
       return
@@ -34,7 +25,7 @@ export default function RootPage() {
     }
 
     setShowIntro(true)
-  }, [isAuthenticated, hasHydrated, router])
+  }, [isAuthenticated, router])
 
   if (!showIntro) return null
 

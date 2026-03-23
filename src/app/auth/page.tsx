@@ -304,19 +304,24 @@ function SignupForm({ onSwitch }: { onSwitch: () => void }) {
 function AuthScreen() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { isAuthenticated, hasHydrated } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
+  const [mounted, setMounted] = useState(false)
 
   const initialTab = searchParams.get("tab") === "login" ? "login" : "signup"
   const [tab, setTab] = useState<"login" | "signup">(initialTab)
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   // Redirect already-authenticated users
   useEffect(() => {
-    if (hasHydrated && isAuthenticated) {
+    if (mounted && isAuthenticated) {
       router.replace("/dashboard")
     }
-  }, [isAuthenticated, hasHydrated, router])
+  }, [mounted, isAuthenticated, router])
 
-  if (!hasHydrated || isAuthenticated) return null
+  if (!mounted || isAuthenticated) return null
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#080a0e] px-4 py-12">
