@@ -12,6 +12,7 @@ import {
   Settings,
   Building2,
   LogOut,
+  Rss,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAppStore } from "@/stores/app-store"
@@ -23,6 +24,7 @@ const workspaceNav = [
   { label: "Goals", icon: Target, href: "/quests" },
   { label: "Pipeline", icon: Users, href: "/pipeline" },
   { label: "Planner", icon: CalendarDays, href: "/planner" },
+  { label: "Feed", icon: Rss, href: "/feed" },
 ]
 
 const analyticsNav = [

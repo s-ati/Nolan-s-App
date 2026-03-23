@@ -12,6 +12,7 @@ import {
   BarChart3,
   Trophy,
   Settings,
+  Rss,
   X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -24,6 +25,7 @@ const mainItems = [
 ]
 
 const moreItems = [
+  { label: "Feed", icon: Rss, href: "/feed" },
   { label: "Performance", icon: BarChart3, href: "/stats" },
   { label: "Achievements", icon: Trophy, href: "/achievements" },
   { label: "Settings", icon: Settings, href: "/settings" },
